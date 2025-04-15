@@ -1,0 +1,111 @@
+/* style.css - Stars Only Version */
+
+/* Basic Reset & Body Styling */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; }
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #00000a; /* Dark background */
+  color: #e0e0e0; /* Light default text */
+  min-height: 100%;
+  position: relative;
+}
+
+/* --- Space Background --- */
+#space-background {
+  position: fixed; /* Fixed position */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Behind content */
+  overflow: hidden; /* Prevent background causing scroll */
+}
+
+/* --- Star Generation (ACTIVE w/ Duplicates) --- */
+@keyframes animStar {
+    from { transform: translateY(0px); }
+    /* Animate upwards by the height used for positioning duplicates */
+    to { transform: translateY(-2000px); }
+}
+@keyframes twinkle {
+  0%, 100% { opacity: var(--star-opacity-base, 0.6); }
+  50% { opacity: var(--star-opacity-twinkle, 1.0); }
+}
+
+/* Base star style for ALL layers */
+#stars-small, #stars-medium, #stars-large,
+#stars-small-2, #stars-medium-2, #stars-large-2 {
+    width: 1px; height: 1px; background: transparent; position: absolute;
+    left: 0;
+    /* Apply animations */
+    animation: animStar linear infinite, twinkle 4s ease-in-out infinite alternate var(--twinkle-delay, 0s);
+    /* Add MANY more coordinates for density! */
+}
+
+/* Position the FIRST set of layers */
+#stars-small, #stars-medium, #stars-large {
+    top: 0;
+}
+/* Position the DUPLICATE set of layers directly below the first set */
+#stars-small-2, #stars-medium-2, #stars-large-2 {
+    top: 2000px; /* Should match the 'to' value in animStar translateY */
+}
+
+
+/* Specific styles for different sizes */
+#stars-small, #stars-small-2 {
+    width: 1px; height: 1px;
+    --star-opacity-base: 0.5; --star-opacity-twinkle: 0.8; --twinkle-delay: 0.5s;
+    box-shadow: 792px 401px #FFF, 186px 127px #FFF, 865px 507px #FFF, 507px 136px #FFF, 184px 479px #FFF, 508px 540px #FFF, 888px 227px #FFF, 365px 388px #FFF, 575px 51px #FFF, 718px 567px #FFF, 17px 342px #FFF, 954px 34px #FFF, 872px 308px #FFF, 687px 213px #FFF, 154px 183px #FFF, 578px 313px #FFF, 931px 537px #FFF, 112px 448px #FFF, 825px 444px #FFF, 681px 514px #FFF, 105px 912px #FFF, 1604px 818px #FFF, 495px 181px #FFF, 1595px 731px #FFF, 1620px 260px #FFF, 110px 617px #FFF, 789px 722px #FFF, 101px 55px #FFF, 1483px 718px #FFF, 898px 966px #FFF, 1691px 842px #FFF, 1880px 199px #FFF, 1189px 398px #FFF, 1408px 95px #FFF, 1531px 860px #FFF, 429px 923px #FFF, 1219px 631px #FFF, 1152px 129px #FFF, 1083px 811px #FFF /* ... */;
+    animation-duration: 720s, 4s; /* Scroll, Twinkle */
+}
+#stars-medium, #stars-medium-2 {
+    width: 2px; height: 2px;
+    --star-opacity-base: 0.7; --star-opacity-twinkle: 1.0; --twinkle-delay: 0s;
+    box-shadow: 278px 589px #FFF, 833px 182px #FFF, 399px 417px #FFF, 958px 197px #FFF, 599px 7px #FFF, 268px 183px #FFF, 500px 250px #FFF, 900px 500px #FFF, 100px 100px #FFF, 1319px 616px #FFF, 382px 866px #FFF, 1870px 711px #FFF, 1723px 43px #FFF, 771px 964px #FFF, 1193px 894px #FFF, 1549px 355px #FFF, 159px 655px #FFF, 1932px 387px #FFF, 650px 821px #FFF /* ... */;
+    animation-duration: 480s, 4s;
+}
+#stars-large, #stars-large-2 {
+    width: 3px; height: 3px;
+    --star-opacity-base: 0.9; --star-opacity-twinkle: 1.0; --twinkle-delay: 1.2s;
+    box-shadow: 606px 440px #FFF, 144px 147px #FFF, 850px 311px #FFF, 42px 467px #FFF, 700px 100px #FFF, 1790px 549px #FFF, 1273px 202px #FFF, 419px 739px #FFF, 1623px 899px #FFF, 926px 688px #FFF, 1400px 400px #FFF /* ... */;
+    animation-duration: 360s, 4s;
+}
+/* --- End Star Styles --- */
+
+
+/* --- REMOVED Spaceship Styling --- */
+
+
+/* --- Content Container & Title (ACTIVE) --- */
+.content-container {
+  position: relative; z-index: 20; padding: 25px 30px; max-width: 950px;
+  margin: 50px auto; background-color: rgba(15, 25, 45, 0.85);
+  border-radius: 12px; box-shadow: 0 0 30px rgba(0, 150, 255, 0.4);
+  border: 1px solid rgba(100, 150, 200, 0.6);
+}
+#main-title {
+  text-align: center; color: #ffffff; font-size: 2.8em; margin-bottom: 35px;
+  font-weight: bold; animation: glow 1.5s ease-in-out infinite alternate;
+  text-shadow: 0 0 7px rgba(255, 26, 26, 0.9), 0 0 12px rgba(255, 26, 26, 0.7), 0 0 20px rgba(255, 26, 26, 0.5), 0 0 35px rgba(255, 77, 77, 0.4), 0 0 50px rgba(255, 77, 77, 0.3);
+}
+@keyframes glow {
+  from { text-shadow: 0 0 7px rgba(255, 26, 26, 0.9), 0 0 12px rgba(255, 26, 26, 0.7), 0 0 20px rgba(255, 77, 77, 0.5), 0 0 30px rgba(255, 77, 77, 0.4), 0 0 40px rgba(255, 128, 128, 0.3); }
+  to { text-shadow: 0 0 10px rgba(255, 26, 26, 1.0), 0 0 20px rgba(255, 26, 26, 0.8), 0 0 35px rgba(255, 77, 77, 0.6), 0 0 50px rgba(255, 128, 128, 0.5), 0 0 70px rgba(255, 128, 128, 0.4); }
+}
+
+/* --- Table Styling (ACTIVE) --- */
+#teamTable { border-collapse: separate; border-spacing: 0; width: 100%; margin: 20px auto; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4); border-radius: 8px; overflow: hidden; }
+th, td { border-bottom: 1px solid rgba(100, 150, 200, 0.3); border-right: 1px solid rgba(100, 150, 200, 0.3); padding: 12px 15px; text-align: center; color: #f0f0f0; }
+th:first-child, td:first-child { border-left: none; } th:last-child, td:last-child { border-right: none; } tbody tr:last-child td { border-bottom: none; }
+th { background-color: rgba(30, 50, 80, 0.85); color: #ffffff; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; border-top: none; border-bottom: 2px solid rgba(100, 150, 200, 0.5); }
+#teamBody tr:nth-child(even) { background-color: rgba(20, 35, 60, 0.7); } #teamBody tr:nth-child(odd) { background-color: rgba(25, 40, 70, 0.7); } #teamBody tr:hover { background-color: rgba(50, 80, 120, 0.85); }
+.money { font-weight: bold; color: #ffdd88; }
+
+/* --- Button Styling (ACTIVE) --- */
+.increment-button { padding: 5px 10px; cursor: pointer; background: linear-gradient(to bottom, #4CAF50, #45a049); color: white; border: 1px solid #3c8b3f; border-radius: 4px; font-size: 1em; margin-left: 10px; transition: all 0.2s ease; box-shadow: 0 2px 3px rgba(0,0,0,0.2); }
+.increment-button:hover:not(:disabled) { background: linear-gradient(to bottom, #5cd05f, #4caf50); box-shadow: 0 3px 5px rgba(0,0,0,0.3); transform: translateY(-1px); } .increment-button:active:not(:disabled) { transform: translateY(0px); box-shadow: 0 1px 2px rgba(0,0,0,0.2); } .increment-button:disabled { background: linear-gradient(to bottom, #777, #666); cursor: not-allowed; opacity: 0.6; box-shadow: none; border-color: #555; }
+
+/* Responsive adjustments (Keep if needed) */
+@media (max-width: 768px) { /* ... */ }

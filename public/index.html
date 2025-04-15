@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bad Word Tracker - Star Field Edition</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Basic fallback styles */
+        body { padding: 1px; background-color: #00000a; }
+        .content-container { display: block !important; visibility: visible !important; z-index: 20 !important; position: relative !important; }
+        #teamTable { display: table !important; visibility: visible !important; }
+    </style>
+</head>
+<body>
+
+    <!-- Space Background Container -->
+    <div id="space-background">
+        <!-- Original Star Layers -->
+        <div id="stars-small"></div>
+        <div id="stars-medium"></div>
+        <div id="stars-large"></div>
+        <!-- Duplicated Star Layers for Continuous Flow -->
+        <div id="stars-small-2" class="stars-duplicate"></div>
+        <div id="stars-medium-2" class="stars-duplicate"></div>
+        <div id="stars-large-2" class="stars-duplicate"></div>
+        <!-- NO SPACESHIP IMG -->
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="content-container">
+        <h1 id="main-title">Bad Word Tracker</h1>
+        <table id="teamTable">
+            <thead>
+                <tr>
+                    <th>Rank</th><th>Pilot Name</th><th>Small Infractions (€0.20)</th>
+                    <th>Major Infractions (€1.00)</th><th class="money">Total Due (€)</th>
+                    <th>Today's Increase (€)</th>
+                </tr>
+            </thead>
+            <tbody id="teamBody">
+                <tr><td colspan="6" style="text-align: center; padding: 20px; color: #fff;">Loading data...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const DAILY_LIMIT = 1.5;
+
+        // ==================================================
+        // === START: Team Data Logic (Verified Working) ===
+        // ==================================================
+        async function loadTeam() {
+            try {
+                console.log("[loadTeam] Starting fetch...");
+                const response = await fetch('/api/team');
+                console.log(`[loadTeam] Fetch response status: ${response.status}`);
+                if (!response.ok) {
+                    let errorMsg = `HTTP error! status: ${response.status}`;
+                    try { const errorData = await response.json(); errorMsg = errorData.error || errorMsg; } catch (e) {}
+                    throw new Error(errorMsg);
+                }
+                const team = await response.json();
+                console.log(`[loadTeam] Received data for ${team ? team.length : 'null'} members.`);
+                const tbody = document.getElementById('teamBody');
+                if (!tbody) { console.error("[loadTeam] Cannot find teamBody element!"); return; }
+                tbody.innerHTML = ''; // Clear "Loading..."
+
+                if (!team || team.length === 0) {
+                    console.warn("[loadTeam] No team members in data.");
+                    tbody.innerHTML = `<tr><td colspan="6" style="color: orange; text-align: center;">No pilot data found. Is the server running and database populated?</td></tr>`;
+                    return;
+                }
+
+                team.forEach(member => {
+                    const isLimitReached = member.daily_money_increase >= (DAILY_LIMIT - 0.001);
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${member.rank}</td>
+                            <td>${member.name}</td>
+                            <td>
+                                ${member.small_bad_words}
+                                <button class="increment-button small-button" onclick="increment(${member.id}, 'small')" ${isLimitReached ? 'disabled' : ''}>+</button>
+                            </td>
+                            <td>
+                                ${member.hard_bad_words}
+                                <button class="increment-button hard-button" onclick="increment(${member.id}, 'hard')" ${isLimitReached ? 'disabled' : ''}>+</button>
+                            </td>
+                            <td class="money">${member.total_due.toFixed(2)}</td>
+                            <td>${member.daily_money_increase.toFixed(2)} / ${DAILY_LIMIT.toFixed(2)}</td>
+                        </tr>
+                    `;
+                });
+                console.log("[loadTeam] Table populated.");
+            } catch (error) {
+                console.error('[loadTeam] Failed:', error);
+                const tbody = document.getElementById('teamBody');
+                if (tbody) {
+                    tbody.innerHTML = `<tr><td colspan="6" style="color: red; text-align: center; padding: 15px;">Error loading data: ${error.message}. Check console/server logs.</td></tr>`;
+                } else {
+                     alert(`Error loading team data: ${error.message}`);
+                }
+            }
+        }
+
+        async function increment(id, type) {
+             const row = document.querySelector(`#teamBody button[onclick^="increment(${id},"]`)?.closest('tr');
+             if (row) { row.querySelectorAll('.increment-button').forEach(btn => btn.disabled = true); }
+             else { console.warn(`[increment] Could not find row for ID ${id} to disable buttons.`); }
+
+            try {
+                console.log(`[increment] Sending ${type} for ID ${id}`);
+                const response = await fetch(`/api/team/${id}/${type}`, { method: 'POST' });
+                const result = await response.json();
+                console.log(`[increment] Response status: ${response.status}`);
+                if (!response.ok) {
+                    const errorMessage = result?.error || `Failed ${type} increment (HTTP ${response.status})`;
+                    console.error('[increment] Error:', errorMessage, result);
+                    alert(`Error: ${errorMessage}`);
+                } else {
+                    console.log(`[increment] Success for ID ${id}, type ${type}`);
+                }
+            } catch (error) {
+                console.error('[increment] Network/Fetch Error:', error);
+                alert(`A network error occurred while logging the infraction: ${error.message}`);
+            } finally {
+                 console.log("[increment] Reloading team data after attempt.");
+                 await loadTeam();
+            }
+        }
+        // ================================================
+        // === END: Team Data Logic                     ===
+        // ================================================
+
+
+        // ====================================================
+        // === NO SPACESHIP ANIMATION LOGIC                 ===
+        // ====================================================
+
+
+        // --- Initial Load for team data ---
+        document.addEventListener('DOMContentLoaded', (event) => {
+            console.log("DOM fully loaded. Loading team data.");
+            loadTeam();
+        });
+
+        console.log("Script execution finished.");
+    </script>
+
+</body>
+</html>
