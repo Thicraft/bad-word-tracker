@@ -56,9 +56,9 @@ db.serialize(() => {
     ['Rogerly', 0, 0], ['Alain', 0, 0], ['Amélie', 0, 0], ['Jacques', 0, 0],
     ['Severo', 0, 0], ['Laurent', 0, 0], ['Catherine', 0, 0], ['Constantin', 0, 0],
     ['Jeremy', 0, 0], ['Jorge', 0, 0], ['Matteo', 0, 0], ['Zine', 0, 0],
-    ['Mikayil', 0, 0], ['Sabrine', 0, 0], ['Serge', 0, 0], ['Mélanie', 0, 0],
+    ['Mikayil', 12, 0], ['Sabrine', 0, 0], ['Serge', 0, 0], ['Mélanie', 0, 0],
     ['Sandrine', 0, 0], ['Quentin', 0, 0], ['Vincent', 0, 0], ['Marie Claire', 0, 0],
-    ['Antoine', 0, 0], ['Thibault', 0, 0]
+    ['Antoine', 0, 0], ['Thibault', 4, 5]
   ];
   // Insert with default 0 for counts and total_due
   sampleData.forEach(data => stmt.run(data[0], data[1], data[2], 0.0)); // Explicitly set initial total_due to 0
